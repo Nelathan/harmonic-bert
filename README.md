@@ -2,8 +2,6 @@
 
 This project is inspired by and implements concepts from the paper "Harmonic Loss Trains Interpretable AI Models" ([arXiv](https://arxiv.org/abs/2502.01628), [Twitter](https://x.com/dbaek__/status/1886781418115862544), [Github](https://github.com/KindXiaoming/grow-crystals)). We explore applying the Harmonic Loss methodology to fine-tuning language models.
 
-![Harmonic Demo](https://raw.githubusercontent.com/KindXiaoming/grow-crystals/refs/heads/main/figures/weights_evolution.gif)
-
 ## Vision
 
 This project explores a novel fine-tuning methodology for language models that replaces the standard `CrossEntropyLoss` with a metric learning objective. The core hypothesis is that the one-hot encoding target used in standard Supervised Fine-Tuning (SFT) is a semantically poor objective. It punishes the model equally for predicting a close synonym ("automobile") as it does for predicting a completely unrelated token ("banana") when the target is "car".
@@ -36,7 +34,7 @@ For CUDA-enabled workstations (Linux/Windows), you can install the CUDA version 
 uv pip install torch --index https://download.pytorch.org/whl/cu129
 ```
 
-This will install the CUDA 12.1-compatible version of PyTorch for better performance on NVIDIA GPUs.
+This will install the CUDA 12-compatible version of PyTorch for better performance on NVIDIA GPUs.
 
 ## Core Mechanics
 
@@ -171,16 +169,6 @@ To ensure computational feasibility and training stability, all vectors are proj
 -   **Regularization:**
     -   No `weight_decay`.
     -   The `dist_head.weight` prototypes will be explicitly re-normalized to the unit sphere after each `optimizer.step()`.
-
-### Hardware & Batching (Single RTX 4090)
-
--   **Per-Device Batch Size:** `2`
--   **Gradient Accumulation Steps:** `16`
--   **Effective Batch Size:** `32`
--   **Attention Mechanism:** `torch.nn.functional.scaled_dot_product_attention` to automatically leverage FlashAttention or other memory-efficient backends.
--   **Memory Management:**
-    -   **Plan A (Default):** Run without gradient checkpointing for maximum speed.
-    -   **Plan B (Fallback):** If OOM errors occur, enable gradient checkpointing on the frozen encoder blocks (`0` through `26`) to trade compute for VRAM.
 
 ### Dataset
 
