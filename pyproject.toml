@@ -1,0 +1,7 @@
+[project]
+name = "harmonic-bert"
+version = "0.1.0"
+description = "Explore Harmonic Loss for language model fine-tuning. Replaces CrossEntropy with a metric learning objective using distance-based predictions."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["torch", "transformers", "datasets", "tqdm"]

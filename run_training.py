@@ -1,6 +1,3 @@
-# run_training.py
-# Main script to assemble and run the experiment.
-
 import torch
 from transformers import AutoTokenizer
 

@@ -6,6 +6,25 @@ import torch.nn as nn
 class HarmonicLoss(nn.Module):
     """
     Calculates loss based on distances, using a tunable harmonic exponent.
+    
+    What is Harmonic Loss?
+    - Harmonic logit d_i is defined as the l_2 distance between the weight vector w_i 
+      and the input (query) x:  d_i = ||w_i - x||_2.
+    - The probability p_i is computed using the harmonic max function:
+      p_i = (d_i^n) / sum_j(d_j^n)
+      where n is the harmonic exponent—a hyperparameter that controls the 
+      heavy-tailedness of the probability distribution.
+    - Harmonic Loss achieves (1) nonlinear separability, (2) fast convergence, 
+      (3) scale invariance, (4) interpretability by design, properties that are 
+      not available in cross-entropy loss.
+      
+    Changes from reference implementation:
+    - The original implementation might use d_i^n directly in the loss calculation,
+      but this version uses (d_i^2 + epsilon)^n to ensure numerical stability
+      with squared Euclidean distances and avoid issues with negative distances
+      when the harmonic exponent is negative (which is common).
+    - Added a small epsilon (1e-8) to prevent division by zero or log(0) if a 
+      distance is exactly zero.
     """
     def __init__(self, harmonic_exp: float):
         super().__init__()

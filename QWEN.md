@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-This directory contains the plan and potentially the implementation for an experimental project named "Harmonic SFT". This project is inspired by the paper "Harmonic Loss Trains Interpretable AI Models" and explores a novel fine-tuning methodology for language models that replaces the standard `CrossEntropyLoss` with a metric learning objective.
+This directory contains the plan and implementation for an experimental project named "Harmonic SFT". This project is inspired by the paper "Harmonic Loss Trains Interpretable AI Models" and explores a novel fine-tuning methodology for language models that replaces the standard `CrossEntropyLoss` with a metric learning objective.
 
 The core idea is to use a custom "Harmonic Loss" function and a "Distance-based Prediction Head" (`DistLayer`) for fine-tuning. Instead of predicting token classes directly, the model learns to position its output vectors in a semantic space relative to token prototypes. This aims to create richer internal representations where geometric distances are semantically meaningful, potentially improving generalization and generation quality. The approach also draws inspiration from "nGPT: Normalized Transformer with Representation Learning on the Hypersphere" through its use of unit sphere normalization.
 
@@ -31,6 +31,15 @@ The base model for this experiment is `chandar-lab/NeoBERT`.
     *   Memory: Plan A is no gradient checkpointing; Plan B enables it on frozen blocks if needed.
 6.  **Dataset**: Intended for use with a high-quality instruction/chat dataset like `mlfoundations/dclm-baseline-1.0-parquet`.
 
+## Project Structure & Dependencies
+
+- **Dependency Management**: Uses `uv` with `pyproject.toml` for dependency management.
+- **CUDA Support**: The project is configured to work on both CPU-only and CUDA-enabled systems. For CUDA-enabled workstations (Linux/Windows), users can install the CUDA version of PyTorch using:
+  ```bash
+  uv pip install torch --index https://download.pytorch.org/whl/cu129
+  ```
+- **Key Dependencies**: `torch`, `transformers`, `datasets`, `tqdm`
+
 ## Current Status
 
-Based on the files present (`README.md`, `QWEN.md`), this directory currently holds the detailed plan for the "Harmonic SFT" project. The actual implementation code is not present in the root directory.
+This directory contains both the detailed plan (`README.md`) and the initial implementation structure. The core modules for the model (`model/`), training (`training/`), and configuration (`config.py`) have been set up. The main entry point for training is `run_training.py`, which is partially implemented and ready for further development.
