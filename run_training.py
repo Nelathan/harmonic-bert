@@ -1,11 +1,12 @@
 import torch
-from transformers import AutoTokenizer
+from transformers import AutoTokenizer, AdamW
+import math
 
 import config
 from model.harmonic_bert import HarmonicBert
 from training.data import get_dataloaders
 from training.trainer import HarmonicTrainer
-# from training.scheduler import get_wsd_scheduler # You'll import this
+from training.scheduler import get_wsd_scheduler
 
 def main():
     print("--- Initializing Harmonic SFT Experiment ---")
@@ -24,35 +25,39 @@ def main():
         h_exp_initial=config.H_EXP_INITIAL
     ).to(config.DEVICE)
 
-    # --- YOUR ASSEMBLY CODE GOES HERE ---
+    # --- ASSEMBLY CODE ---
 
-    # TODO: Surgically set requires_grad and dtypes for model parameters
+    for name, param in model.named_parameters():
+        if "dist_head" in name:
+            param.requires_grad = True
+        else:
+            # Freeze all other parameters
+            param.requires_grad = False
 
-    # TODO: Filter parameters for the optimizer
-    # trainable_params = [p for p in model.parameters() if p.requires_grad]
+    # Filter parameters for the optimizer
+    trainable_params = [p for p in model.parameters() if p.requires_grad]
+    print(f"Trainable parameters: {len(trainable_params)}")
 
-    # TODO: Instantiate optimizer
-    # optimizer = torch.optim.AdamW(
-    #     trainable_params,
-    #     lr=config.LEARNING_RATE,
-    #     betas=config.OPTIMIZER_BETAS
-    # )
+    # Instantiate optimizer
+    optimizer = AdamW(
+        trainable_params,
+        lr=config.LEARNING_RATE,
+        betas=config.OPTIMIZER_BETAS
+    )
 
-    # TODO: Instantiate scheduler
-    # num_training_steps = len(train_loader) * config.NUM_EPOCHS // config.GRADIENT_ACCUMULATION_STEPS
-    # warmup_steps = int(num_training_steps * config.WARMUP_RATIO)
-    # scheduler = get_wsd_scheduler(optimizer, warmup_steps, num_training_steps)
+    # Instantiate scheduler
+    num_training_steps = len(train_loader) * config.NUM_EPOCHS // config.GRADIENT_ACCUMULATION_STEPS
+    warmup_steps = int(num_training_steps * config.WARMUP_RATIO)
+    scheduler = get_wsd_scheduler(optimizer, warmup_steps, num_training_steps)
 
-    # TODO: Instantiate the Trainer
-    # trainer = HarmonicTrainer(model, optimizer, scheduler, train_loader, config)
+    # Instantiate the Trainer
+    trainer = HarmonicTrainer(model, optimizer, scheduler, train_loader, config)
 
-    # TODO: Run the training
-    # trainer.run()
+    # Run the training
+    trainer.run()
 
-    print("--- Experiment Setup Complete ---")
-    print("Ready for you to assemble and run.")
+    print("--- Experiment Complete ---")
 
 
 if __name__ == "__main__":
-    import math # Add math import for scheduler
     main()

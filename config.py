@@ -28,3 +28,7 @@ DATASET_NAME = 'mlfoundations/dclm-baseline-1.0-parquet'
 # --- Checkpointing & Logging ---
 USE_GRADIENT_CHECKPOINTING = False # Set to True if OOM
 LOGGING_STEPS = 10
+
+# --- Trackio Configuration ---
+TRACKING_ENABLED = True
+TRACKING_PROJECT_NAME = "harmonic-bert"

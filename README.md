@@ -36,6 +36,25 @@ uv pip install torch --index https://download.pytorch.org/whl/cu129
 
 This will install the CUDA-compatible version of PyTorch for better performance on NVIDIA GPUs.
 
+## Experiment Tracking
+
+This project uses [Trackio](https://huggingface.co/blog/trackio) for experiment tracking, which is a lightweight, open-source alternative to Weights & Biases. Trackio provides:
+
+- Local dashboard for visualizing training metrics
+- Easy sharing and embedding of results
+- Seamless integration with Hugging Face Spaces
+- Drop-in replacement for wandb API
+
+To view the tracking dashboard, run:
+```bash
+python view_tracking.py
+```
+
+Or from the command line:
+```bash
+trackio show
+```
+
 ## Core Mechanics
 
 ### 1. The `DistLayer` Head
